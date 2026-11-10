@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { AppMode, PowerTreeFullState } from '../types';
+import { AppMode, PowerTreeFullState, BatteryStatus } from '../types';
 
 export function usePowerTreeState() {
   const [mode, setMode] = useState<AppMode>('demo');
@@ -30,8 +30,8 @@ export function usePowerTreeState() {
   const [reservoirVisualLevel, setReservoirVisualLevel] = useState<number>(0);
   const [treeVisualLevel, setTreeVisualLevel] = useState<number>(15);
 
-  // Battery State
-  const [battery, setBattery] = useState<'charging' | 'discharging' | 'idle' | 'unknown'>('charging');
+  // Battery State: 'charging' | 'discharging' | 'idle' | 'no_data' | 'unknown'
+  const [battery, setBattery] = useState<BatteryStatus>('charging');
 
   // Web Serial State
   const [serialSupported, setSerialSupported] = useState<boolean>(false);
@@ -54,9 +54,15 @@ export function usePowerTreeState() {
     }
   }, []);
 
-  // Update Solar & Battery when Sun or LED changes in DEMO mode
+  // Update Solar & Battery when Sun, LED or Mode changes
   useEffect(() => {
-    if (mode === 'live') return;
+    if (mode === 'live') {
+      // In live mode, only show charging if confirmed by measurement/charge controller
+      if (!serialConnected) {
+        setBattery('no_data');
+      }
+      return;
+    }
 
     if (isSunOn) {
       setSolarStatus('generating');
@@ -71,7 +77,7 @@ export function usePowerTreeState() {
         setBattery('idle');
       }
     }
-  }, [isSunOn, ledOn, mode]);
+  }, [isSunOn, ledOn, mode, serialConnected]);
 
   // Demo simulation clock for Rain & Water Pump
   useEffect(() => {
@@ -269,11 +275,15 @@ export function usePowerTreeState() {
                 setTreeVisualLevel(40);
               }
 
-              if (parsed.battery) {
+              // In Live Mode: only show charging status when confirmed by Arduino measurement/charge controller
+              if (parsed.battery !== undefined && parsed.battery !== null) {
                 const b = String(parsed.battery).toLowerCase();
                 if (b.includes('charg')) setBattery('charging');
                 else if (b.includes('dis')) setBattery('discharging');
-                else setBattery('idle');
+                else if (b.includes('idle')) setBattery('idle');
+                else setBattery('no_data');
+              } else {
+                setBattery('no_data');
               }
 
               if (parsed.led !== undefined) {

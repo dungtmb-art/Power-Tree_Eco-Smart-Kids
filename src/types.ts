@@ -9,7 +9,7 @@ export type SolarStatus = 'generating' | 'idle' | 'no_data';
 export type PiezoStatus = 'signal' | 'idle' | 'no_data';
 export type ReservoirStatus = 'empty' | 'low' | 'high';
 export type TreeTankStatus = 'not_full' | 'full';
-export type BatteryStatus = 'charging' | 'discharging' | 'idle' | 'unknown';
+export type BatteryStatus = 'charging' | 'discharging' | 'idle' | 'no_data' | 'unknown';
 
 export interface SolarData {
   status: SolarStatus;

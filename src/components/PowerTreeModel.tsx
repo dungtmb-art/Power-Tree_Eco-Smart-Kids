@@ -447,6 +447,182 @@ export const PowerTreeModel: React.FC<PowerTreeModelProps> = ({ state, onCarTrig
           )}
         </g>
 
+        {/* ================= 3B. HỆ THỐNG PIN LƯU TRỮ CHUNG & SƠ ĐỒ NGUYÊN LÝ NĂNG LƯỢNG ================= */}
+        <g id="commonBatteryAndEnergyFlow">
+          {/* 1. Tuyến dây Solar -> Mạch quản lý sạc -> Pin lưu trữ */}
+          <g id="solarToBatteryCircuit">
+            {/* Dây từ tán cây dẫn xuống mạch sạc */}
+            <path
+              d="M 470,320 L 440,350 L 440,385"
+              fill="none"
+              stroke={solar.status === 'generating' ? '#f59e0b' : '#64748b'}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            {solar.status === 'generating' && (
+              <path
+                d="M 470,320 L 440,350 L 440,385"
+                fill="none"
+                stroke="#fef08a"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+                className="animate-pulse"
+              />
+            )}
+
+            {/* Hộp Mạch Quản Lý Sạc Solar */}
+            <g transform="translate(440, 395)">
+              <rect x="-18" y="-9" width="36" height="18" rx="3.5" fill="#ffffff" stroke="#f59e0b" strokeWidth="2" />
+              <text x="0" y="3.5" textAnchor="middle" fill="#b45309" fontSize="6.5" fontWeight="900">MẠCH SẠC</text>
+            </g>
+
+            {/* Dây từ Mạch sạc vào Pin lưu trữ */}
+            <path
+              d="M 440,405 L 440,428 L 425,434"
+              fill="none"
+              stroke={solar.status === 'generating' ? '#f59e0b' : '#64748b'}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            {solar.status === 'generating' && (
+              <path
+                d="M 440,405 L 440,428 L 425,434"
+                fill="none"
+                stroke="#fef08a"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+                className="animate-pulse"
+              />
+            )}
+          </g>
+
+          {/* 2. Tuyến dây Piezo -> Mạch thu năng lượng -> Pin lưu trữ (Minh họa mục tiêu thu hồi) */}
+          <g id="piezoToHarvesterCircuit">
+            {/* Dây từ tấm Piezo bên trái sang mạch thu */}
+            <path
+              d="M 225,512 L 270,512 L 270,480"
+              fill="none"
+              stroke={piezo.hasSignal ? '#06b6d4' : '#64748b'}
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+
+            {/* Hộp Mạch Thu Năng Lượng Piezo */}
+            <g transform="translate(270, 470)">
+              <rect x="-20" y="-9" width="40" height="18" rx="3.5" fill="#ffffff" stroke="#0891b2" strokeWidth="2" />
+              <text x="0" y="3.5" textAnchor="middle" fill="#0e7490" fontSize="6" fontWeight="900">MẠCH THU</text>
+              {piezo.hasSignal && (
+                <circle cx="0" cy="0" r="14" fill="none" stroke="#22d3ee" strokeWidth="2" className="animate-ping" />
+              )}
+            </g>
+
+            {/* Đường dây nét đứt minh họa hướng nghiên cứu tích hợp vào pin chung */}
+            <path
+              d="M 290,470 L 392,460"
+              fill="none"
+              stroke="#06b6d4"
+              strokeWidth="2"
+              strokeDasharray="4 3"
+              className={piezo.hasSignal ? 'animate-pulse' : ''}
+            />
+            <text x="340" y="464" textAnchor="middle" fill="#0891b2" fontSize="6.5" fontWeight="800">
+              (Mục tiêu thu hồi năng lượng)
+            </text>
+          </g>
+
+          {/* 3. Tuyến dây Pin lưu trữ -> Đèn LED đường */}
+          <g id="batteryToLedCircuit">
+            <path
+              d="M 392,455 L 103,455 L 103,440"
+              fill="none"
+              stroke={ledOn ? '#facc15' : '#64748b'}
+              strokeWidth={ledOn ? '2.5' : '1.5'}
+              strokeLinecap="round"
+            />
+            {ledOn && (
+              <path
+                d="M 392,455 L 103,455 L 103,440"
+                fill="none"
+                stroke="#fef08a"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                className="animate-pulse"
+              />
+            )}
+            <text x="210" y="450" fill={ledOn ? '#b45309' : '#64748b'} fontSize="7.5" fontWeight="900">
+              ⚡ Cấp điện cho Đèn LED ({ledOn ? 'BẬT' : 'TẮT'})
+            </text>
+          </g>
+
+          {/* 4. KHỐI BIỂU TƯỢNG PIN LƯU TRỮ CHUNG */}
+          <g id="commonBatteryUnit" transform="translate(415, 452)">
+            {/* Đế đỡ hộp pin */}
+            <rect x="-24" y="19" width="48" height="6" rx="2" fill="#334155" stroke="#0f172a" strokeWidth="1.5" />
+
+            {/* Khối thân Pin lưu trữ */}
+            <rect
+              x="-22"
+              y="-17"
+              width="44"
+              height="36"
+              rx="4"
+              fill="#0f172a"
+              stroke={battery === 'charging' ? '#10b981' : battery === 'discharging' ? '#f59e0b' : '#64748b'}
+              strokeWidth="2.5"
+            />
+
+            {/* Cọc đấu nối điện cực (+) và (-) trên nắp pin */}
+            <rect x="-14" y="-22" width="7" height="5" rx="1" fill="#ef4444" stroke="#991b1b" strokeWidth="1" />
+            <text x="-10.5" y="-18" textAnchor="middle" fill="#ffffff" fontSize="5" fontWeight="900">+</text>
+
+            <rect x="7" y="-22" width="7" height="5" rx="1" fill="#3b82f6" stroke="#1d4ed8" strokeWidth="1" />
+            <text x="10.5" y="-18" textAnchor="middle" fill="#ffffff" fontSize="5" fontWeight="900">-</text>
+
+            {/* Màn hình hiển thị trạng thái trên mặt trước pin */}
+            <rect x="-18" y="-12" width="36" height="24" rx="2.5" fill="#1e293b" stroke="#334155" strokeWidth="1" />
+
+            {/* Biểu tượng pin & Trạng thái */}
+            <g transform="translate(-13, -7)">
+              <rect x="0" y="0" width="16" height="10" rx="2" fill="none" stroke="#e2e8f0" strokeWidth="1.2" />
+              <rect x="16" y="2.5" width="2" height="5" rx="0.5" fill="#e2e8f0" />
+              {/* Vạch nạp bên trong */}
+              {battery === 'charging' ? (
+                <rect x="2" y="2" width="12" height="6" rx="1" fill="#10b981" className="animate-pulse" />
+              ) : battery === 'discharging' ? (
+                <rect x="2" y="2" width="8" height="6" rx="1" fill="#f59e0b" />
+              ) : battery === 'idle' ? (
+                <rect x="2" y="2" width="6" height="6" rx="1" fill="#94a3b8" />
+              ) : null}
+            </g>
+
+            {/* Đèn LED trạng thái trên hộp pin */}
+            <circle
+              cx="10"
+              cy="-2"
+              r="2.5"
+              fill={battery === 'charging' ? '#10b981' : battery === 'discharging' ? '#f59e0b' : '#94a3b8'}
+              className={battery === 'charging' ? 'animate-ping' : ''}
+            />
+
+            {/* Nhãn trạng thái hiển thị đơn giản: Đang sạc, Đang cấp điện, Đang chờ, Chưa có dữ liệu */}
+            <text x="0" y="9" textAnchor="middle" fill="#ffffff" fontSize="6.5" fontWeight="800">
+              {battery === 'charging'
+                ? 'ĐANG SẠC'
+                : battery === 'discharging'
+                ? 'CẤP ĐIỆN'
+                : battery === 'idle'
+                ? 'ĐANG CHỜ'
+                : 'CHƯA CÓ DỮ LIỆU'}
+            </text>
+
+            {/* Bảng tên phía dưới chân đế */}
+            <rect x="-38" y="26" width="76" height="15" rx="3" fill="#ffffff" stroke="#059669" strokeWidth="1.8" filter="drop-shadow(0 1px 3px rgba(0,0,0,0.1))" />
+            <text x="0" y="36.5" textAnchor="middle" fill="#065f46" fontSize="7" fontWeight="900">
+              PIN LƯU TRỮ CHUNG
+            </text>
+          </g>
+        </g>
+
         {/* ================= 4. UNDERGROUND SYSTEM (BỂ THU GOM & MÁY BƠM) ================= */}
         <g id="undergroundSystem">
           {/* Soil / Ground Cutaway Background: y=530 to 660 */}
@@ -795,22 +971,23 @@ export const PowerTreeModel: React.FC<PowerTreeModelProps> = ({ state, onCarTrig
               strokeWidth="2.2"
             />
 
-            {/* === TẦNG 2: CÁC LÁ GIỮA LỚN, CONG TỰ NHIÊN (Màu xanh tươi sáng, nét đậm 2.5px) === */}
-            {/* Lá 2.1: Lá lớn sải cánh sang bên trái, có răng cưa rõ */}
+            {/* === TẦNG 2: 5 LÁ Ở GIỮA CONG CONG NHƯ CÂY TỰ NHIÊN (Màu xanh tươi sáng, nét đậm 2.5px) === */}
+            {/* Lá 2.1: Lá sải cánh bên trái uốn lượn cong vút tự nhiên */}
             <g id="leafMidLeft">
               <path
                 d="M -2,0 
-                   C -40,-18 -85,-18 -125,-6
-                   C -148,2 -170,16 -190,32
-                   L -182,26 L -178,18 L -162,14 L -156,6 L -140,2 L -130,-4
-                   L -112,-8 L -95,-16 L -75,-22 L -50,-24 L -2,-4 Z"
+                   C -42,-28 -88,-32 -130,-18
+                   C -155,-10 -178,5 -196,24
+                   C -188,18 -182,10 -174,6
+                   L -166,12 L -158,4 L -150,10 L -140,2 L -130,6
+                   L -116,-2 L -100,-10 L -76,-18 L -48,-18 L -2,-4 Z"
                 fill="url(#leafGradTop)"
                 stroke="#052e16"
                 strokeWidth="2.5"
               />
-              {/* Gân chính cong theo chiều dài lá - Đậm 2.6px */}
+              {/* Gân chính cong theo thân lá */}
               <path
-                d="M -2,-2 C -45,-16 -95,-14 -182,28"
+                d="M -2,-2 C -48,-24 -105,-20 -190,22"
                 fill="none"
                 stroke="#86efac"
                 strokeWidth="2.6"
@@ -818,106 +995,116 @@ export const PowerTreeModel: React.FC<PowerTreeModelProps> = ({ state, onCarTrig
                 opacity="0.9"
               />
               {/* Các gân phụ nhỏ */}
-              <line x1="-50" y1="-17" x2="-62" y2="-24" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
-              <line x1="-80" y1="-14" x2="-94" y2="-22" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
-              <line x1="-120" y1="-7" x2="-136" y2="-12" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
-              <line x1="-150" y1="5" x2="-164" y2="2" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="-50" y1="-19" x2="-62" y2="-28" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="-85" y1="-16" x2="-100" y2="-25" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="-125" y1="-8" x2="-142" y2="-15" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="-155" y1="5" x2="-170" y2="0" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
             </g>
 
-            {/* Lá 2.2: Lá lớn sải cánh sang bên phải, hơi chúc xuống tự nhiên */}
+            {/* Lá 2.2: Lá sải cánh bên phải uốn lượn cong vút tự nhiên */}
             <g id="leafMidRight">
               <path
                 d="M 2,0 
-                   C 40,-16 85,-14 125,-2
-                   C 148,6 170,20 188,38
-                   L 180,32 L 176,24 L 160,20 L 154,12 L 138,8 L 128,2
-                   L 110,-2 L 94,-10 L 74,-16 L 48,-18 L 2,-4 Z"
+                   C 42,-28 88,-32 130,-18
+                   C 155,-10 178,5 196,24
+                   C 188,18 182,10 174,6
+                   L 166,12 L 158,4 L 150,10 L 140,2 L 130,6
+                   L 116,-2 L 100,-10 L 76,-18 L 48,-18 L 2,-4 Z"
                 fill="url(#leafGradTop)"
                 stroke="#052e16"
                 strokeWidth="2.5"
               />
               <path
-                d="M 2,-2 C 45,-14 95,-10 180,34"
+                d="M 2,-2 C 48,-24 105,-20 190,22"
                 fill="none"
                 stroke="#86efac"
                 strokeWidth="2.6"
                 strokeLinecap="round"
                 opacity="0.9"
               />
-              <line x1="50" y1="-14" x2="62" y2="-20" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
-              <line x1="80" y1="-10" x2="94" y2="-18" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
-              <line x1="120" y1="-3" x2="136" y2="-8" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
-              <line x1="150" y1="10" x2="164" y2="6" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="50" y1="-19" x2="62" y2="-28" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="85" y1="-16" x2="100" y2="-25" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="125" y1="-8" x2="142" y2="-15" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="155" y1="5" x2="170" y2="0" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
             </g>
 
-            {/* Lá 2.3: Lá vươn thẳng đỉnh cao ở chính giữa (Lá vương miện) */}
+            {/* Lá 2.3: Lá chính giữa uốn lượn duyên dáng vươn cao (Mang Tấm Pin 2) */}
             <g id="leafTopCenter">
               <path
                 d="M 0,-4 
-                   C -24,-50 -32,-100 -20,-155
-                   C -14,-175 -6,-195 0,-210
-                   C 6,-195 14,-175 20,-155
-                   C 32,-100 24,-50 0,-4 Z"
-                fill="#22c55e"
+                   C -16,-30 -28,-65 -30,-105
+                   C -31,-125 -27,-150 -20,-175
+                   L -26,-165 L -19,-155 L -25,-145 L -18,-135 L -26,-120 L -20,-105
+                   C -16,-150 -8,-185 0,-218
+                   C 8,-185 16,-150 20,-105
+                   L 26,-120 L 18,-135 L 25,-145 L 19,-155 L 26,-165
+                   C 27,-150 31,-125 30,-105
+                   C 28,-65 16,-30 0,-4 Z"
+                fill="url(#leafGradTop)"
                 stroke="#052e16"
                 strokeWidth="2.6"
               />
-              {/* Răng cưa viền lá đỉnh */}
-              <path
-                d="M -18,-150 L -25,-142 L -19,-132 L -26,-122 L -20,-112 L -26,-102"
-                fill="none"
-                stroke="#052e16"
-                strokeWidth="1.6"
-              />
-              <path
-                d="M 18,-150 L 25,-142 L 19,-132 L 26,-122 L 20,-112 L 26,-102"
-                fill="none"
-                stroke="#052e16"
-                strokeWidth="1.6"
-              />
-              <line x1="0" y1="-4" x2="0" y2="-205" stroke="#bbf7d0" strokeWidth="2.8" strokeLinecap="round" />
+              {/* Gân chính giữa lá vươn lên đỉnh */}
+              <line x1="0" y1="-4" x2="0" y2="-212" stroke="#bbf7d0" strokeWidth="2.8" strokeLinecap="round" />
+              {/* Các gân phụ tủa ra 2 bên uốn cong tự nhiên */}
+              <path d="M 0,-50 C -10,-60 -18,-68 -24,-72" fill="none" stroke="#86efac" strokeWidth="1.5" opacity="0.8" />
+              <path d="M 0,-50 C 10,-60 18,-68 24,-72" fill="none" stroke="#86efac" strokeWidth="1.5" opacity="0.8" />
+              <path d="M 0,-90 C -12,-100 -20,-108 -26,-112" fill="none" stroke="#86efac" strokeWidth="1.5" opacity="0.8" />
+              <path d="M 0,-90 C 12,-100 20,-108 26,-112" fill="none" stroke="#86efac" strokeWidth="1.5" opacity="0.8" />
+              <path d="M 0,-150 C -8,-160 -14,-168 -18,-172" fill="none" stroke="#86efac" strokeWidth="1.5" opacity="0.8" />
+              <path d="M 0,-150 C 8,-160 14,-168 18,-172" fill="none" stroke="#86efac" strokeWidth="1.5" opacity="0.8" />
             </g>
 
-            {/* Lá 2.4: Lá nghiêng vươn cao góc 10h (Left-high) */}
+            {/* Lá 2.4: Lá nghiêng vươn cao góc 10h uốn cong vòm tự nhiên */}
             <g id="leafHighLeft">
               <path
                 d="M -3,-4 
-                   C -28,-45 -54,-85 -66,-135
-                   C -72,-158 -76,-180 -78,-198
-                   L -70,-185 L -66,-172 L -56,-156 L -50,-140 L -40,-120
-                   C -30,-88 -18,-45 -1,-6 Z"
+                   C -25,-40 -50,-75 -68,-115
+                   C -78,-138 -86,-165 -88,-195
+                   C -85,-182 -78,-170 -72,-162
+                   L -79,-152 L -72,-142 L -80,-130 L -72,-120 L -79,-108
+                   C -62,-80 -40,-45 -1,-6 Z"
                 fill="#16a34a"
                 stroke="#052e16"
                 strokeWidth="2.5"
               />
               <path
-                d="M -2,-4 C -28,-45 -54,-85 -74,-190"
+                d="M -2,-4 C -28,-45 -58,-95 -85,-190"
                 fill="none"
                 stroke="#86efac"
                 strokeWidth="2.6"
+                strokeLinecap="round"
                 opacity="0.9"
               />
+              <line x1="-30" y1="-50" x2="-44" y2="-62" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="-50" y1="-95" x2="-68" y2="-108" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="-68" y1="-140" x2="-82" y2="-152" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
             </g>
 
-            {/* Lá 2.5: Lá nghiêng vươn cao góc 2h (Right-high) */}
+            {/* Lá 2.5: Lá nghiêng vươn cao góc 2h uốn cong vòm tự nhiên */}
             <g id="leafHighRight">
               <path
                 d="M 3,-4 
-                   C 28,-45 54,-85 66,-135
-                   C 72,-158 76,-180 78,-198
-                   L 70,-185 L 66,-172 L 56,-156 L 50,-140 L 40,-120
-                   C 30,-88 18,-45 1,-6 Z"
+                   C 25,-40 50,-75 68,-115
+                   C 78,-138 86,-165 88,-195
+                   C 85,-182 78,-170 72,-162
+                   L 79,-152 L 72,-142 L 80,-130 L 72,-120 L 79,-108
+                   C 62,-80 40,-45 1,-6 Z"
                 fill="#16a34a"
                 stroke="#052e16"
                 strokeWidth="2.5"
               />
               <path
-                d="M 2,-4 C 28,-45 54,-85 74,-190"
+                d="M 2,-4 C 28,-45 58,-95 85,-190"
                 fill="none"
                 stroke="#86efac"
                 strokeWidth="2.6"
+                strokeLinecap="round"
                 opacity="0.9"
               />
+              <line x1="30" y1="-50" x2="44" y2="-62" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="50" y1="-95" x2="68" y2="-108" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
+              <line x1="68" y1="-140" x2="82" y2="-152" stroke="#86efac" strokeWidth="1.4" opacity="0.75" />
             </g>
 
             {/* === TẦNG 3: CÁC LÁ PHÍA TRƯỚC RỦ NHẸ & ÔM CỔ BÌNH (Tạo độ nổi bật) === */}
@@ -958,8 +1145,8 @@ export const PowerTreeModel: React.FC<PowerTreeModelProps> = ({ state, onCarTrig
             />
             <line x1="0" y1="0" x2="0" y2="40" stroke="#ffffff" strokeWidth="1.8" opacity="0.9" />
 
-            {/* === F. 3 TẤM PIN MẶT TRỜI NHỎ BỐ TRÍ HÀI HÒA TRÊN TÁN LÁ - Nét đậm rõ nét === */}
-            {/* TẤM PIN 1 (Phiến lá bên trái) */}
+            {/* === F. 3 TẤM PIN MẶT TRỜI NHỎ BỐ TRÍ CÂN ĐỐI TRÊN TÁN LÁ (PIN 2 NẰM TRÊN LÁ CHÍNH GIỮA) === */}
+            {/* TẤM PIN 1 (Phiến lá sải cánh bên trái) */}
             <g transform="translate(-118, -18) rotate(-14)">
               {/* Đế khung nhôm bảo vệ */}
               <rect x="-20" y="-13" width="40" height="26" rx="2.5" fill="#0f172a" stroke="#0f172a" strokeWidth="2.2" />
@@ -977,22 +1164,25 @@ export const PowerTreeModel: React.FC<PowerTreeModelProps> = ({ state, onCarTrig
               <text x="0" y="3.5" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="900">PIN 1</text>
             </g>
 
-            {/* TẤM PIN 2 (Phiến lá cao bên phải đón nắng đỉnh) */}
-            <g transform="translate(48, -105) rotate(16)">
+            {/* TẤM PIN 2 (NẰM TRÊN LÁ CHÍNH GIỮA - CÂN ĐỐI & HÀI HÒA) */}
+            <g transform="translate(0, -118)">
+              {/* Đế khung nhôm bảo vệ */}
               <rect x="-20" y="-13" width="40" height="26" rx="2.5" fill="#0f172a" stroke="#0f172a" strokeWidth="2.2" />
+              {/* Lưới silicon quang điện */}
               <rect x="-18" y="-11" width="36" height="22" rx="1.5" fill="url(#solarCellGrad)" />
               <line x1="-18" y1="0" x2="18" y2="0" stroke="#93c5fd" strokeWidth="1.2" opacity="0.85" />
               <line x1="-6" y1="-11" x2="-6" y2="11" stroke="#93c5fd" strokeWidth="1.2" opacity="0.85" />
               <line x1="6" y1="-11" x2="6" y2="11" stroke="#93c5fd" strokeWidth="1.2" opacity="0.85" />
               {solar.status === 'generating' && (
-                <polygon points="-8,-9 4,-9 -2,9 -14,9" fill="#ffffff" opacity="0.4" className="animate-pulse" />
+                <polygon points="-12,-9 -2,-9 -7,9 -15,9" fill="#ffffff" opacity="0.4" className="animate-pulse" />
               )}
-              <rect x="-2.5" y="13" width="5" height="8" fill="#334155" stroke="#0f172a" strokeWidth="1" />
+              {/* Chân kẹp gắn vào thân lá chính giữa */}
+              <rect x="-2.5" y="13" width="5" height="7" fill="#334155" stroke="#0f172a" strokeWidth="1" />
               <text x="0" y="3.5" textAnchor="middle" fill="#ffffff" fontSize="7" fontWeight="900">PIN 2</text>
             </g>
 
-            {/* TẤM PIN 3 (Phiến lá xòe bên phải) */}
-            <g transform="translate(118, -10) rotate(14)">
+            {/* TẤM PIN 3 (Phiến lá sải cánh bên phải) */}
+            <g transform="translate(118, -18) rotate(14)">
               <rect x="-20" y="-13" width="40" height="26" rx="2.5" fill="#0f172a" stroke="#0f172a" strokeWidth="2.2" />
               <rect x="-18" y="-11" width="36" height="22" rx="1.5" fill="url(#solarCellGrad)" />
               <line x1="-18" y1="0" x2="18" y2="0" stroke="#93c5fd" strokeWidth="1.2" opacity="0.85" />

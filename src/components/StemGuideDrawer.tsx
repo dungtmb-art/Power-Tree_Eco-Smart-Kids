@@ -238,6 +238,27 @@ void loop() {
                   <li>Nước sạch giữ trong túi thân cây sẵn sàng dùng tưới cây xanh sau bão!</li>
                 </ul>
               </div>
+
+              {/* Mission 4: Energy Flow & Battery Storage */}
+              <div className="p-3.5 rounded-xl border border-emerald-300 bg-emerald-50/50 space-y-2">
+                <div className="flex items-center gap-2 font-bold text-emerald-950">
+                  <Zap className="w-4 h-4 text-emerald-600" />
+                  <span>4. Hệ thống Pin lưu trữ chung & Sơ đồ nguyên lý năng lượng</span>
+                </div>
+                <div className="text-xs text-slate-700 space-y-1.5 leading-relaxed">
+                  <p>
+                    <strong>Sơ đồ nguyên lý chuẩn:</strong>
+                  </p>
+                  <ul className="list-disc pl-4 space-y-1 text-slate-600">
+                    <li><strong>Solar → Mạch quản lý sạc → Pin lưu trữ:</strong> Năng lượng từ 3 tấm pin mặt trời đi qua mạch điều khiển sạc để nạp an toàn vào cụm pin lưu trữ chung.</li>
+                    <li><strong>Piezo → Mạch thu năng lượng → Pin lưu trữ:</strong> Xung điện từ tấm áp điện khi xe chạy qua được dẫn tới mạch thu gom năng lượng (hướng nghiên cứu thu hồi năng lượng cơ học bổ trợ).</li>
+                    <li><strong>Pin lưu trữ → Đèn LED:</strong> Cụm pin lưu trữ chung trực tiếp cấp điện cho hệ thống đèn đường chiếu sáng đô thị ban đêm.</li>
+                  </ul>
+                  <p className="text-[11px] text-slate-500 italic mt-1">
+                    * Trong chế độ thực tế (Live Mode), trạng thái sạc pin chỉ hiển thị khi có tín hiệu xác nhận từ mạch đo của Arduino, tuyệt đối không hiển thị chỉ số giả định.
+                  </p>
+                </div>
+              </div>
             </div>
           )}
 
