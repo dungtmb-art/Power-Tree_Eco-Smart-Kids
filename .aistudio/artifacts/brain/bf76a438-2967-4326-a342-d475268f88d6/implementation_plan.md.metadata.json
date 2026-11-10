@@ -1,0 +1,6 @@
+{
+  "summary":  "Kế hoạch nâng cấp và phát triển POWER TREE Smart Dashboard: kiến trúc hệ thống, phân tích ảnh mô hình thực tế, bố cục Green Planet, logic mô phỏng 3 sứ mệnh (Solar, Piezo, Water), tích hợp Web Serial Arduino qua JSON 9600 baud và bảng kiểm tra rủi ro.",
+  "updatedAt":  "2026-11-10T08:08:57.496188391Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

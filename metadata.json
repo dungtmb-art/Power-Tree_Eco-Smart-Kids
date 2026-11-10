@@ -1,0 +1,6 @@
+{
+  "name": "POWER TREE - Smart Dashboard",
+  "description": "Smart Dashboard giáo dục STEM cho học sinh lớp 3 mô phỏng và kết nối mô hình cây thông minh với 3 sứ mệnh: Năng lượng mặt trời, Áp điện Piezo và Quản lý nước mưa tự động.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
